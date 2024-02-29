@@ -1,0 +1,55 @@
+package com.example.notification_app
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
+import android.util.Log;
+
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
+import androidx.annotation.RequiresApi;
+
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    private static final String TAG = "MyFirebaseMessagingService";
+    private static final String CHANNEL_ID = "news_channel";
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        super.onMessageReceived(remoteMessage);
+
+        // Handle the received message here
+        Log.d(TAG, "From: " + remoteMessage.getFrom());
+
+        // Check if the message contains a data payload.
+        if (remoteMessage.getData().size() > 0) {
+            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            // Handle the data payload
+        }
+
+        // Check if the message contains a notification payload.
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            // Handle the notification payload
+        }
+    }
+
+    @Override
+    public void onNewToken(String token) {
+        Log.d(TAG, "Refreshed token: " + token);
+        // You can send the token to your server for further processing
+    }
+
+    // Add this method to create a notification channel on Android Oreo and above
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createNotificationChannel() {
+        CharSequence name = "News Updates";
+        String description = "Get notified about the latest news";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        NotificationChannel channel = new NotificationChannel(news_channel, News Updates, importance);
+        channel.setDescription(description);
+
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+    }
+}
